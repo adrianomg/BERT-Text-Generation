@@ -40,7 +40,7 @@ def generate_sentence(input_text, num_candidate_tokens=5, print_candidates = Fal
     masked_probs = torch.softmax(masked_logits, dim=-1)
     top_candidate_words = torch.topk(masked_probs, num_candidate_tokens, dim=-1).indices.tolist()
 
-    # get random value from 0 to num_candidate_words
+    # get a random value from 0 to num_candidate_words
     random_index = torch.randint(0, num_candidate_tokens, (1,)).item()
 
     token = top_candidate_words[random_index]
@@ -71,8 +71,8 @@ def generate_sentence(input_text, num_candidate_tokens=5, print_candidates = Fal
 num_words = 50                          # total number of words to generate
 period_probability = 0.0                # probability of adding a period
 max_period_probability = 3              # maximum probability of adding a period every turn
-probability_increase_per_word = 0.5     # increase in probability of adding a period every turn
-max_candidate_tokens = 10               # number of generated words each turn to pick from
+probability_increase_per_word = 0.5     # increase in the probability of adding a period every turn
+max_candidate_tokens = 5               # number of generated words each turn to pick from
 print_candidates = True                 # print the candidate tokens (words) each turn
 
 input_text = "The quick brown fox ran [MASK]." # initial input text
@@ -86,8 +86,8 @@ for n in range(0, num_words):
     # generate a random number from 0 to 10
     rolled_dice = torch.randint(0, 10, (1,)).item()
 
-    # if the random number is within the to the period probability, then add a period
-    # else, increase the period probability by 0.5
+    # If the random number is within the period probability, then add a period
+    # Else, increase the period probability by 0.5
     if rolled_dice <= period_probability:
         generated_sentence = generated_sentence[0:-1] + ". [SEP] [MASK]."
         period_probability = 0
