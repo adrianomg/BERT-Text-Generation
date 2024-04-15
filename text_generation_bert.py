@@ -1,4 +1,3 @@
-
 # This script generates a random text using a BERT model. 
 # The script generates a pre-defined total number of words, with a given probability of adding a period before generating every word. 
 # The script uses the BERT model to generate the next word in the sentence and transformers library to load the BERT model and the tokenizer.
@@ -10,6 +9,8 @@
 
 import torch
 from transformers import BertTokenizer, BertForMaskedLM
+
+from time import time
 
 model_name = "bert-large-cased"
 
@@ -68,14 +69,16 @@ def generate_sentence(input_text, num_candidate_tokens=5, print_candidates = Fal
     return generated_sentence
 
 
-num_words = 50                          # total number of words to generate
+num_words = 250                          # total number of words to generate
 period_probability = 0.0                # probability of adding a period
 max_period_probability = 3              # maximum probability of adding a period every turn
 probability_increase_per_word = 0.5     # increase in the probability of adding a period every turn
-max_candidate_tokens = 5               # number of generated words each turn to pick from
-print_candidates = True                 # print the candidate tokens (words) each turn
+max_candidate_tokens = 5                # number of generated words each turn to pick from
+print_candidates = False                # print the candidate tokens (words) each turn
 
 input_text = "The quick brown fox ran [MASK]." # initial input text
+
+start_t = time()
 
 # generate the first word
 generated_sentence = generate_sentence(input_text, num_candidate_tokens=max_candidate_tokens, print_candidates = True)
@@ -98,6 +101,8 @@ for n in range(0, num_words):
     # generate the next word
     generated_sentence = generate_sentence(generated_sentence, num_candidate_tokens=max_candidate_tokens, print_candidates = True)
 
+end_t = time()
+
 # print the generated text
 print(f"Final result: {generated_sentence}") 
-
+print("\n     Inference time:", end_t - start_t, end="\n")
